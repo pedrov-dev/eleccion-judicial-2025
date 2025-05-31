@@ -8,7 +8,7 @@ from src.rag import rag_ask_openai
 from src.embedding import load_embedding_model
 from src.pinecone import get_or_create_index, get_pinecone_client
 from src.openai import ask_openai
-from src.utils.config import INDEX_NAME, POLICY_PRIORITIES
+from src.utils.config import INDEX_NAME, POLICY_PRIORITIES, CANDIDATURA_DESCRIPTIONS
 from src.namespace import DISPLAY_NAMES, get_namespace
 
 @st.cache_resource
@@ -32,6 +32,10 @@ display_namespace = st.selectbox(
     "Selecciona el tipo de candidatura para tu consulta:",
     DISPLAY_NAMES
 )
+
+desc = CANDIDATURA_DESCRIPTIONS.get(display_namespace, "No description available for this type.")
+with st.expander("Ver descripción del rol de esta candidatura"):
+    st.write(desc)
 
 policy_priorities = st.multiselect(
     "Selecciona tus prioridades o valores para la justicia:",
@@ -85,7 +89,7 @@ def extract_names_from_response(response):
 
 # --- Sidebar navigation for history and report ---
 with st.sidebar:
-    st.markdown("### Historial de consultas")
+    st.markdown("### Historial de Consultas")
     selected = None  # Ensure 'selected' is always defined
     if st.session_state.history:
         options = [
@@ -103,9 +107,9 @@ with st.sidebar:
         selected_idx = None
 
     st.markdown("---")
-    st.markdown("### Reporte final")
+    st.markdown("### Reporte Finales")
     if st.session_state.history:
-        if st.button("Generar reporte final", key="generate_report"):
+        if st.button("Generar Reporte Candidatos (Solo Candidatos)", key="generate_report"):
             # Build the report dictionary
             report = {}
             for entry in st.session_state.history:
@@ -137,9 +141,23 @@ with st.sidebar:
             # Generate PDF
             pdf = FPDF()
             pdf.add_page()
+            pdf.set_font("Arial", "B", 16)
+            pdf.cell(0, 10, "Reporte de candidaturas recomendadas", ln=True, align="C")
+            pdf.ln(5)
+
             pdf.set_font("Arial", size=12)
-            for line in report_lines:
-                pdf.multi_cell(0, 10, line)
+            for candidatura, names in report.items():
+                pdf.set_font("Arial", "B", 14)
+                pdf.cell(0, 10, candidatura, ln=True)
+                pdf.set_font("Arial", size=12)
+                if names:
+                    for name in names:
+                        pdf.cell(10)  # Indent
+                        pdf.cell(0, 10, f"- {name}", ln=True)
+                else:
+                    pdf.cell(10)
+                    pdf.cell(0, 10, "- (Sin nombres recomendados detectados)", ln=True)
+                pdf.ln(2)
 
             # Save PDF to a temporary file
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
@@ -147,12 +165,52 @@ with st.sidebar:
                 tmpfile.seek(0)
                 pdf_bytes = tmpfile.read()
 
+            # Provide download button for the PDF
             st.download_button(
                 label="Descargar Reporte en PDF",
                 data=pdf_bytes,
                 file_name="reporte_candidaturas.pdf",
                 mime="application/pdf",
                 key="download_report_pdf"
+            )
+
+        if st.button("Generar Reporte Detallado (Con Justificaciones)", key="download_full_report"):
+
+            # Generate detailed report
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 16)
+            pdf.cell(0, 10, "Reporte Detallado de Consultas", ln=True, align="C")
+            pdf.ln(8)
+
+            for i, entry in enumerate(st.session_state.history, 1):
+                pdf.set_font("Arial", "B", 12)
+                pdf.cell(0, 10, f"Consulta #{i}", ln=True)
+                pdf.set_font("Arial", "", 11)
+                pdf.multi_cell(0, 8, f"Candidatura: {entry.get('candidatura', 'No especificada')}")
+                if entry["prioridades"]:
+                    pdf.multi_cell(0, 8, f"Prioridades: {', '.join(entry['prioridades'])}")
+                if entry["pregunta"]:
+                    pdf.multi_cell(0, 8, f"Pregunta: {entry['pregunta']}")
+                pdf.set_font("Arial", "I", 11)
+                pdf.multi_cell(0, 8, f"Respuesta:\n{entry['respuesta']}")
+                pdf.ln(4)
+                pdf.set_font("Arial", "", 11)
+                pdf.cell(0, 1, "", ln=True)  # Separator
+
+            # Save PDF to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
+                pdf.output(tmpfile.name)
+                tmpfile.seek(0)
+                pdf_bytes = tmpfile.read()
+
+            # Provide download button for the PDF
+            st.download_button(
+                label="Descargar Reporte Detallado en PDF",
+                data=pdf_bytes,
+                file_name="reporte_detallado_candidaturas.pdf",
+                mime="application/pdf",
+                key="download_full_report_pdf"
             )
  
 # --- Main area: show selected response as a "page" ---
