@@ -18,6 +18,7 @@ Haz clic en Enviar para recibir recomendaciones y justificaciones.
 Consulta tu historial y genera un reporte final en PDF desde la barra lateral.
 
 ### Estructura del proyecto
+```text
 app/
 │
 ├── app.py                  # Aplicación principal de Streamlit
@@ -29,6 +30,6 @@ app/
 │   ├── namespace.py
 │   └── utils/
 │       └── config.py
-
+```
 ### Licencia
 MIT
