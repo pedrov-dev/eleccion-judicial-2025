@@ -223,3 +223,14 @@ if selected_idx is not None and st.session_state.history:
     if item["pregunta"]:
         st.markdown(f"**Pregunta:** {item['pregunta']}")
     st.markdown(f"**Respuesta:** {item['respuesta']}")
+
+# --- Footer with instructions ---
+st.markdown("""
+---
+<sub>
+Este sitio es una herramienta informativa desarrollada de manera independiente. 
+No pertenece ni representa a ninguna autoridad electoral ni partido político.
+Las recomendaciones se generan con base en coincidencias entre los valores proporcionados por la persona usuaria y la información pública disponible sobre las candidaturas.
+La decisión final de voto es personal y este sitio no pretende sustituir el juicio propio ni influir de manera politica.
+</sub>
+""", unsafe_allow_html=True)
