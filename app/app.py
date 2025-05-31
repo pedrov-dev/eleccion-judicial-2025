@@ -3,6 +3,7 @@ import re
 from fpdf import FPDF
 import tempfile
 import pandas as pd
+import os
 
 from src.rag import rag_ask_openai
 from src.embedding import load_embedding_model
@@ -10,6 +11,8 @@ from src.pinecone import get_or_create_index, get_pinecone_client
 from src.openai import ask_openai
 from src.utils.config import INDEX_NAME, POLICY_PRIORITIES, CANDIDATURA_DESCRIPTIONS
 from src.namespace import DISPLAY_NAMES, get_namespace
+
+os.environ["STREAMLIT_WATCHER_TYPE"] = "none"
 
 @st.cache_resource
 def get_resources():
