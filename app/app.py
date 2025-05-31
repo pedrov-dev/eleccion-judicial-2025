@@ -22,6 +22,12 @@ model, index = get_resources()
 
 st.title("Asistente Eleccion Judicial 2025")
 
+st.markdown(f"""
+            **Bienvenido al Asistente para la Elección Judicial 2025. 
+            Aquí puedes consultar sobre los candidatos a jueces y fiscales, 
+            y obtener recomendaciones basadas en tus prioridades o preguntas específicas.**
+""")
+
 display_namespace = st.selectbox(
     "Selecciona el tipo de candidatura para tu consulta:",
     DISPLAY_NAMES
@@ -31,6 +37,8 @@ policy_priorities = st.multiselect(
     "Selecciona tus prioridades o valores para la justicia:",
     POLICY_PRIORITIES
 )
+
+st.markdown(f"**Y/O**")
 
 if "history" not in st.session_state:
     st.session_state.history = []
