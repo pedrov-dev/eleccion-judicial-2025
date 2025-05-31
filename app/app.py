@@ -20,7 +20,7 @@ def get_resources():
 
 model, index = get_resources()
 
-st.title("Asistente para Eleccion Judicial 2025")
+st.title("Asistente Eleccion Judicial 2025")
 
 display_namespace = st.selectbox(
     "Selecciona el tipo de candidatura para tu consulta:",
