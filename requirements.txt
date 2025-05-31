@@ -1,0 +1,8 @@
+xlrd
+pandas
+pinecone
+python-dotenv
+sentence-transformers
+openai 
+streamlit
+fpdf
