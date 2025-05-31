@@ -20,7 +20,7 @@ def get_resources():
 
 model, index = get_resources()
 
-st.title("Asistente Eleccion Judicial 2025")
+st.title("Asistente Elección Judicial 2025")
 
 st.markdown(f"""
             **Bienvenido al Asistente para la Elección Judicial 2025. 
