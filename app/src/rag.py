@@ -1,7 +1,7 @@
 def retrieve_context(query, index, model, namespace, top_k=5):
     """
     Embed the query and retrieve top_k relevant texts from Pinecone.
-    Returns a concatenated string of retrieved texts.
+    Returns a concatenated string of unique retrieved texts.
     """
     query_emb = model.encode([query])[0].tolist()
     results = index.query(
@@ -10,10 +10,15 @@ def retrieve_context(query, index, model, namespace, top_k=5):
         include_metadata=True,
         namespace=namespace
     )
-    context = "\n".join(
-        [match['metadata']['text'] for match in results['matches']
-         if 'metadata' in match and 'text' in match['metadata']]
-    )
+    # Deduplicate texts while preserving order
+    seen = set()
+    unique_texts = []
+    for match in results['matches']:
+        text = match.get('metadata', {}).get('text')
+        if text and text not in seen:
+            seen.add(text)
+            unique_texts.append(text)
+    context = "\n".join(unique_texts)
     return context
 
 

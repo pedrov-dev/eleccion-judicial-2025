@@ -183,23 +183,41 @@ with st.sidebar:
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", "B", 16)
-            pdf.cell(0, 10, "Reporte Detallado de Consultas", ln=True, align="C")
-            pdf.ln(8)
+            pdf.set_text_color(40, 40, 40)
+            pdf.cell(0, 12, "Reporte Detallado de Consultas", ln=True, align="C")
+            pdf.ln(6)
 
             for i, entry in enumerate(st.session_state.history, 1):
-                pdf.set_font("Arial", "B", 12)
+                # Section header
+                pdf.set_font("Arial", "B", 13)
+                pdf.set_text_color(0, 70, 140)
                 pdf.cell(0, 10, f"Consulta #{i}", ln=True)
+                pdf.set_draw_color(200, 200, 200)
+                pdf.set_line_width(0.5)
+                pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+                pdf.ln(2)
+
+                # Content
                 pdf.set_font("Arial", "", 11)
+                pdf.set_text_color(0, 0, 0)
                 pdf.multi_cell(0, 8, f"Candidatura: {entry.get('candidatura', 'No especificada')}")
                 if entry["prioridades"]:
+                    pdf.set_font("Arial", "I", 11)
                     pdf.multi_cell(0, 8, f"Prioridades: {', '.join(entry['prioridades'])}")
                 if entry["pregunta"]:
+                    pdf.set_font("Arial", "", 11)
                     pdf.multi_cell(0, 8, f"Pregunta: {entry['pregunta']}")
                 pdf.set_font("Arial", "I", 11)
+                pdf.set_text_color(60, 60, 60)
                 pdf.multi_cell(0, 8, f"Respuesta:\n{entry['respuesta']}")
                 pdf.ln(4)
-                pdf.set_font("Arial", "", 11)
-                pdf.cell(0, 1, "", ln=True)  # Separator
+
+                # Separator between queries
+                pdf.set_draw_color(180, 180, 180)
+                pdf.set_line_width(0.2)
+                y = pdf.get_y()
+                pdf.line(10, y, 200, y)
+                pdf.ln(4)
 
             # Save PDF to a temporary file
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
