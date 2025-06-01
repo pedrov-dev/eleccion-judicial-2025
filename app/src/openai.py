@@ -19,7 +19,7 @@ Con base en los valores, prioridades y opiniones proporcionadas por la persona u
 Sé conciso, objetivo y fundamenta tus respuestas únicamente en la información proporcionada.
 """
 
-def ask_openai(prompt, model_name="gpt-4o-mini"):
+def ask_openai(prompt, model_name="gpt-4o"):
     response = client.chat.completions.create(
         model=model_name,
         messages=[
