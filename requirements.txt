@@ -6,3 +6,4 @@ sentence-transformers
 openai 
 streamlit
 fpdf
+pytest
