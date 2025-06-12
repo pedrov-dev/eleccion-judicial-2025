@@ -10,7 +10,7 @@ NAMESPACE_OPTIONS = [
     "Magistraturas_de_Tribunales_Colegiados_de_Circuito_texts",
     "Juezas_es_de_Distrito_texts",
     "Magistratura_Salas_Regionales_del_TE_del_PJF_texts",
-    "Ministra_o_Suprema_Corte_de_Justicia_de_la_Nacin_texts",
+    "Ministra_o_Suprema_Corte_de_Justicia_de_la_Nación_texts",
     "Magistratura_Tribunal_de_Disciplina_Judicial_texts",
     "Magistratura_Sala_Superior_del_TE_del_PJF_texts"
 ]
